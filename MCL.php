@@ -7,7 +7,7 @@ class MCL {
 	var $powerValue = 2;
 	var $inflationValue = 2;
 	var $matrix;
-	var $matrixKeyArray;
+	var $matrixKeyArray;  //set this to map row ids from db to matrix rows
 	var $clusters;
 	
 	var $dataFilePrefix = '';  //set this if you would like the matrix to be written to a file after each iteration
@@ -140,6 +140,9 @@ class MCL {
 			}
 			$this->clusters[$clusterNumber][] = $rowNumber;
 		}
+		
+		//rebase cluster array
+		$this->clusters = array_values($this->clusters);
 		
 		//save cluster values to file
 		if(strlen($this->dataFilePrefix) > 0) {
