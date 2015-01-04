@@ -10,7 +10,8 @@ class MCL {
 	var $matrixKeyArray;
 	var $clusters;
 	
-	var $dataFilePrefix = '';
+	var $dataFilePrefix = '';  //set this if you would like the matrix to be written to a file after each iteration
+								//usefull for large matrices that will take a while to run
 	var $skipSetup = false; //used to skip initial setting of self loops and normalisation
 							//when loading matrix from a backup file
 	
@@ -31,11 +32,11 @@ class MCL {
 		
 		//print_r($this->matrix);
 		$this->matrix->pruneZeros = $prune;
-		echo '<p>Starting Matrix</p>';
+		//echo '<p>Starting Matrix</p>';
 		//echo $this->matrix->toHTML();
 		if(!$this->skipSetup) {
 			$this->matrix->addSelfLoop();
-			echo '<p>Add Self Loop</p>';
+			//echo '<p>Add Self Loop</p>';
 			//echo $this->matrix->toHTML();
 			if(strlen($this->dataFilePrefix) > 0 && is_array($this->matrixKeyArray) && sizeof($this->matrixKeyArray) > 0) 
 			{
@@ -46,7 +47,7 @@ class MCL {
 			}
 			
 			$this->matrix->normalise();
-			echo '<p>Normalise</p>';
+			//echo '<p>Normalise</p>';
 			//echo $this->matrix->toHTML();
 			
 			if(strlen($this->dataFilePrefix) > 0 && is_array($this->matrixKeyArray) && sizeof($this->matrixKeyArray) > 0) 
@@ -68,18 +69,18 @@ class MCL {
 				$lastAllColsNumberValues = $this->matrix->allColsNumberValues(3);
 				$lastHighValueCount = $this->matrix->highValueCount;
 			}
-			echo "<h2>Loop $i</h2>";
+			//echo "<h2>Loop $i</h2>";
 			
 			$this->matrix->getNthPower($this->powerValue);
-			echo '<p>Square</p>';
+			//echo '<p>Square</p>';
 			//echo $this->matrix->toHTML();
 			
 			$this->matrix->inflate($this->inflationValue);
-			echo '<p>Inflate</p>';
+			//echo '<p>Inflate</p>';
 			//echo $this->matrix->toHTML();
 			
 			$this->matrix->normalise();
-			echo '<p>Normalise</p>';
+			//echo '<p>Normalise</p>';
 			//echo $this->matrix->toHTML();
 			
 			if(strlen($this->dataFilePrefix) > 0) {
@@ -88,24 +89,19 @@ class MCL {
 				file_put_contents($this->dataFilePrefix."data_backup_$i.php", $this->matrix->toPHP()); 
 			}
 			
-			echo "<p>High Value Count: ".$this->matrix->highValueCount."</p>";
+			//echo "<p>High Value Count: ".$this->matrix->highValueCount."</p>";
 			
-			echo "<p>Is Complete: ".$this->matrix->allColsNumberValues(3)."</p>";
+			//echo "<p>Is Complete: ".$this->matrix->allColsNumberValues(3)."</p>";
 			
 		}
-		
-		
-		
 		$this->matrix->normalise();
-		echo '<p>Normalise</p>';
-		echo $this->matrix->toHTML();
+		//echo '<p>Normalise</p>';
+		//echo $this->matrix->toHTML();
 		
 	}
 
-	function interpret() {
-		echo '<p>Interpret</p>';
-		echo $this->matrix->toHTML();
-		
+	//Interpret the clusters
+	function interpret() {	
 		$numberClusters = 0;
 		$elementClusterValues = array(); //track which cluster number each element ends up in
 		
@@ -135,14 +131,9 @@ class MCL {
 			}
 		}
 		
-		echo('<pre>');
-		print_r($elementClusterValues);
-		echo('</pre>');
-		
 		//now loop through cluster values array and slipt based on cluster number
 		$this->clusters = array();
 		foreach($elementClusterValues as $rowNumber => $clusterNumber) {
-			echo $rowNumber." ".$clusterNumber." ";	
 			if(!key_exists($clusterNumber, $this->clusters)) {
 				$this->clusters[$clusterNumber] = array();	
 				
@@ -156,13 +147,7 @@ class MCL {
 			if(is_array($this->matrixKeyArray) && sizeof($this->matrixKeyArray) > 0) {
 				file_put_contents($this->dataFilePrefix."clusterWithKey.php", $this->matrixToPHP('clusterWithKey', $this->getClusterValuesToKeys()));
 			}
-			
 		}
-		
-		echo('<pre>');
-		print_r($this->clusters);
-		echo('</pre>');
-		
 	}
 
 	function getClusterValuesToKeys() {
@@ -187,7 +172,6 @@ class MCL {
 				foreach($row as $colKey => $col) {;
 					$string .= $col.',';
 				}
-				echo $string;
 				$string = substr($string, 0, strlen($string) - 1); //remove trailing ,
 				$string .= ");\n";
 			}

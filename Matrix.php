@@ -99,7 +99,7 @@ class Matrix {
 		//store a copy for future multiplications
 		$originalMatrix = clone $this;
 		for($i = 1; $i < $power; $i++) {
-			echo "Multiply $i";
+			//echo "Multiply $i";
 			if($this->pruneZeros) {
 				$this->multiplyWithPruning($originalMatrix);
 			}
@@ -118,7 +118,7 @@ class Matrix {
 		for($row = 1; $row <= $this->rowCount; $row++) {
 			//echo "Multiply Row $row<br/>\n";
 			for($col = 1; $col <= $this->colCount; $col++) {
-				echo "\tMultiply Row $row Col $col<br/>\n";	
+				//echo "\tMultiply Row $row Col $col<br/>\n";	
 				//echo memory_get_usage()."\n";	
 				$newValue = 0;
 				
@@ -142,7 +142,7 @@ class Matrix {
 		
 		if(sizeof($this->rowValuesStart) == 0) {
 			//setup the pruning
-			echo "<p>Setting up pruning</p>";
+			//echo "<p>Setting up pruning</p>";
 		}
 		
 		$oldMatrix = clone $this;
@@ -153,7 +153,7 @@ class Matrix {
 						
 					$newValue = 0;
 					
-					echo "\tMultiply Row with Pruning $row Col $col<br/>\n";
+					//echo "\tMultiply Row with Pruning $row Col $col<br/>\n";
 					//multiply across $row and down $col
 					for($i = 1; $i <= $this->colCount; $i++) {	
 						$newValue += $oldMatrix->getElement($row, $i) * $matrix->getElement($i, $col);	
@@ -258,6 +258,7 @@ class Matrix {
         return $html;
 	}
 	
+	//turns matrix into php array for writing to file
 	function toPHP() {
 		$string = '<?php'."\n".'$data = array();'."\n";
 		foreach($this->data as $row) {

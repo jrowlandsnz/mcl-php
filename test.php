@@ -41,25 +41,34 @@ $data1[] = array(0,0,0,0,0,1,1,1,0);
 //print_r($data);
 try {
 	$test = new Matrix($data);
+	echo "<h2>Test Matrix 1</H2>";
+	echo $test->toHTML();
+	
 	$mcl = new MCL($test);
 	$mcl->cluster();
 	$mcl->interpret();
 	
+	echo "<p>Clusters:</p><pre>";
+	print_r($mcl->clusters);
+	echo "</pre>";
+	
 	$test1 = new Matrix($data1);
+	echo "<h2>Test Matrix 2</H2>";
+	echo $test1->toHTML();
+	
 	$mcl1 = new MCL($test1);
-	$mcl1->dataFilePrefix = 'data/test124';
+	//uncommenting below line will save results to a php file
+	//$mcl1->dataFilePrefix = 'data/test124';
 	$mcl1->cluster();
 	$mcl1->interpret();
-	
+
+	echo "<p>Clusters:</p><pre>";
+	print_r($mcl1->clusters);
+	echo "</pre>";
 	
 }
 catch (Exception $e) {
 	echo 'Caught exception: ',  $e->getMessage(), "\n";
 }
-echo 'Backup';
-include("data/testdata.php");
-$backup = new Matrix($data);
-echo $backup->toHtml();
-
 
 ?>
