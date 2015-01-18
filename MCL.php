@@ -14,6 +14,9 @@ class MCL {
 								//usefull for large matrices that will take a while to run
 	var $skipSetup = false; //used to skip initial setting of self loops and normalisation
 							//when loading matrix from a backup file
+							
+	var $minInterpretationValue = 0.2; //minimum elemnet value in final matrix that mean row and column
+										//are in same cluster						
 	
 	function MCL($matrix) {
 		$this->matrix = $matrix;
@@ -124,7 +127,7 @@ class MCL {
 				
 				//add any positive elemtents in this row to the cluster
 				for($j = 0; $j < $this->matrix->colCount; $j++) {
-					if($this->matrix->getElement($i + 1, $j + 1) > 0.4) {
+					if($this->matrix->getElement($i + 1, $j + 1) > $this->minInterpretationValue) {
 						$elementClusterValues[$j] = $numberClusters;
 					}
 				}
@@ -151,6 +154,14 @@ class MCL {
 				file_put_contents($this->dataFilePrefix."clusterWithKey.php", $this->matrixToPHP('clusterWithKey', $this->getClusterValuesToKeys()));
 			}
 		}
+		
+		//return the cluster
+		if(is_array($this->matrixKeyArray) && sizeof($this->matrixKeyArray) > 0) {
+			return $this->getClusterValuesToKeys();
+		}
+		else {
+			return $this->clusters;
+		}
 	}
 
 	function getClusterValuesToKeys() {
@@ -173,7 +184,12 @@ class MCL {
 			if(is_array($row)) {
 	        	$string .= '$'.$name.'['.$key.'] = array(';
 				foreach($row as $colKey => $col) {;
-					$string .= $col.',';
+					if(is_string($col)) {
+						$string .= '"'.$col.'",';
+					}
+					else {
+						$string .= $col.',';
+					}
 				}
 				$string = substr($string, 0, strlen($string) - 1); //remove trailing ,
 				$string .= ");\n";
